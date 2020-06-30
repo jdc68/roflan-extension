@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <link rel="stylesheet" type="text/css" href="popup.css" />
+      <title>Roflan-extesion</title>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+   </head>
+
+   <body>
+      <div class="main">
+         <div class="titleWrapper">
+            <h2 class="title">Epic Roflan Images Extension</h2>
+         </div>
+         <div class="stats-wrapp" id="stats-wrapp-modal">
+            <div id="arrow-back">
+               <img src="../img/icons/arrow_back.png" alt="Back" />
+            </div>
+            <h1 class="modal-title stats-title">Statistics</h1>
+            <h2 class="modal-title sub-title" id="total">Total roflans sent: 0</h2>
+            <h2 class="modal-title sub-title">Most used roflans:</h2>
+            <table class="stats-table" id="table-for-images">
+
+            </table>
+         </div>
+         <div class="content">
+            <img src="../img/tenor.gif" width="300px" height="200px" id="ricardo" />
+            <h1 class="modal-title settings-title">Settings</h1>
+            <ul class="settings">
+               <li>
+                  <div class="optionWrapper">
+                     <p>Enable EPIC Ricardo Milos background</p>
+                     <label class="switch">
+                            <input type="checkbox" id="enableBackground">
+                            <span class="slider round"></span>
+                        </label>
+                  </div>
+               </li>
+               <!-- <li>
+                    <div class="optionWrapper">
+                        <p>Enable image randomization(coming soon)</p>
+                        <label class="switch">
+                            <input type="checkbox" id="enableRandomization">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </li> -->
+            </ul>
+            <div class="stats-controls">
+               <img src="../img/icons/stasts.png" alt="" />
+               <p id="stats-button">Statistics</p>
+            </div>
+         </div>
+      </div>
+      <script type="text/javascript" src="popup.js"></script>
+   </body>
+
+</html>
