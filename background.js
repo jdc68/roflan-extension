@@ -20,7 +20,7 @@ let data = [
     { key: '/shrug', url: ['https://i.imgur.com/BQli5Za.png', 'https://i.imgur.com/ODsvXHS.png', 'https://i.imgur.com/CYfjYAK.png'] },
     { key: '/smug', url: ['https://i.imgur.com/LY8e8tI.png', 'https://i.imgur.com/Dxc6DgN.png'] },
     { key: '/genji', url: ['https://i.imgur.com/lnwSeEb.png'] },
-    { key: '/confusion', url: ['https://imgur.com/etLDZIW.png'] },
+    { key: '/confusion', url: ['https://imgur.com/etLDZIW.png', 'https://imgur.com/LajVQFT.png'] },
     { key: '/mda', url: ['https://i.imgur.com/PUvrOxs.png', 'https://i.imgur.com/RIDZ0rJ.png'] },
     { key: '/ai', url: ['https://imgur.com/ie1ZqQf.png', 'https://i.imgur.com/tDoE0YC.png'] },
     { key: '/sad', url: ['https://i.imgur.com/CbwBTZG.png', 'https://i.imgur.com/y0Jcqgd.png'] },
