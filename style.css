@@ -60,6 +60,16 @@
     margin: 12px 6px 12px 0
 }
 
+#roflan_search {
+    margin: 0!important;
+    margin-left: 266px!important;
+    background-color: #333336!important;
+}
+
+#roflan_search :focus {
+    background-color: #444446!important;
+}
+
 #menu_wrapper .scroll_overwflow ul {
     padding: 0 40px;
 }
@@ -145,6 +155,12 @@
     height: 20px;
     visibility: hidden;
     opacity: 0;
+}
+
+#fav_images {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0!important;
+    margin: 0 40px;
 }
 
 .fav_icon {

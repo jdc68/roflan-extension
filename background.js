@@ -4,7 +4,7 @@ let data = [
     { key: '/rip', url: ['https://i.imgur.com/Zi56IcI.png', 'https://i.imgur.com/8Z6UYkN.png'] },
     { key: '/pog', url: ['https://i.imgur.com/kUUbpzw.png', 'https://imgur.com/OWjyWce.png'] },
     { key: '/f', url: ['https://i.imgur.com/ZIQskTi.png', 'https://i.imgur.com/7jCVsXh.png', 'https://i.imgur.com/syJVMAu.png', 'https://i.imgur.com/WEBmFzC.png', 'https://imgur.com/rVtcWms.png'] },
-    { key: '/🤠', url: ['https://i.imgur.com/TGEhsi3.jpg', 'https://imgur.com/rVfY26h.png', 'https://imgur.com/gjY9Vri.png'] },
+    { key: '/cowboy', url: ['https://i.imgur.com/TGEhsi3.jpg', 'https://imgur.com/rVfY26h.png', 'https://imgur.com/gjY9Vri.png'] },
     { key: '/wtf', url: ['https://i.imgur.com/Pf3KWCz.png', 'https://i.imgur.com/Tp4aApA.jpg'] },
     { key: '/bu', url: ['https://i.imgur.com/SrXxOxV.png'] },
     { key: '/dive', url: ['https://i.imgur.com/qPatrtx.png'] },
@@ -84,7 +84,7 @@ chrome.runtime.onMessage.addListener(
         }
         if (request.login) {
             const clientID = '2685278';
-            var authUrl = 'https://oauth.vk.com/authorize?client_id=' + clientID + '&scope=messages,offline&redirect_uri=http%3A%2F%2Foauth.vk.com%2Fblank.html&display=page&response_type=token';
+            var authUrl = 'https://oauth.vk.com/authorize?client_id=' + clientID + '&scope=messages,docs,offline&redirect_uri=http%3A%2F%2Foauth.vk.com%2Fblank.html&display=page&response_type=token';
             chrome.tabs.create({ url: authUrl, selected: false }, tab => {
                 chrome.tabs.onUpdated.addListener(tabUpdateListener(tab.id));
             });

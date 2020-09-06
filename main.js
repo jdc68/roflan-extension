@@ -71,6 +71,10 @@ var settings = {
 var peerId;
 var peer_type;
 
+function uploadAudio() {
+
+}
+
 function sendSticker(doc_id, type) {
     let random_id = Math.random() * 10000000;
     chrome.runtime.sendMessage({ reloaded: true });
@@ -124,6 +128,7 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
             addToggleOnHover(wrapper, box);
             wrapper.className = 'roflanFace_wrapper _im_dialog_action_wrapper';
             wrapper.id = 'roflanFace_wrapper';
+            wrapper.addEventListener("click", uploadAudio)
             icon = document.createElement('img');
             icon.src = chrome.extension.getURL('img/icons/icon.png');
             icon.id = 'roflanFace';
@@ -150,6 +155,12 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
         let fav_title = document.createElement('p');
         fav_title.innerHTML = 'Избранные';
         favourites_wrapp.appendChild(fav_title);
+
+        let search_input = document.createElement('input');
+        search_input.type = 'text';
+        search_input.className = 'text ts_input'
+        search_input.id = 'roflan_search'
+        scroll_overwflow.appendChild(search_input);
 
         let fav_images_wrapp = document.createElement('ul');
         fav_images_wrapp.id = 'fav_images';
@@ -278,6 +289,8 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
             container.appendChild(fav);
         }
 
+       
+
         chrome.storage.local.get('favourites', () => {
             for (let obj in data) {
                 if (!data[obj].favourite) {
@@ -285,6 +298,8 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                 }
             };
         })
+
+        search_input.oninput = searchImage(search_input.value, data);
 
         function removeFavourite(element, key) {
             createDefault(key)
@@ -301,6 +316,58 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                     })
                 })
             })
+        }
+
+        function searchImage(value, data) {
+            let filtered_data = [];
+            for (item in data) {
+                value = search_input.value.toLowerCase();
+                let key = data[item].key.toLowerCase();
+
+                if (key.includes(value)) {
+                    filtered_data.push(data[item]);
+                }
+            }
+            return filtered_data;
+        }
+
+        search_input.oninput = () => {
+            let images = []
+            let favs = []
+            images = document.querySelectorAll(".imageContainer");
+            
+            for (img in images) {
+                if (images[img].parentNode != undefined) {
+                    images[img].parentNode.remove() 
+                }
+            }
+      
+            let toDisplay = searchImage(search_input.value, data)
+            if (images.length === 0 ) {
+                favourites_wrapp.style.display = 'none';
+            }
+            for (let obj in toDisplay) {
+                let index;
+                for (let i in data) {
+                    if (toDisplay[obj].key === data[i].key) {
+                        index = i;
+                    }
+                }
+                
+                if(data[index].favourite) {
+                    favs.push(data[index]);
+                    createFavourite(index);
+                } else {
+                    createDefault(index);
+                }
+
+                if (favs.length > 0) {
+                    favourites_wrapp.style.display = 'block';
+                } else {
+                    favourites_wrapp.style.display = 'none';
+                }
+                
+            }
         }
 
         let box_footer = document.createElement('div');
