@@ -167,6 +167,8 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
         favourites_wrapp.appendChild(fav_images_wrapp);
         scroll_overwflow.appendChild(favourites_wrapp);
 
+        let imageSize = 86;
+
         function createFavourite(key) {
             data[key].favourite = true;
             let container = document.createElement('div');
@@ -210,6 +212,10 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                 removeFavourite(container.parentNode, key);
             }
             container.appendChild(fav);
+            container.style.width = imageSize + 'px';
+            container.style.height = imageSize + 'px';
+            container.children[0].style.width = imageSize + 'px';
+            container.children[0].style.height = imageSize + 'px';
         }
 
         chrome.storage.local.get('favourites', result => {
@@ -287,6 +293,10 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                 }
             }
             container.appendChild(fav);
+            container.style.width = imageSize + 'px';
+            container.style.height = imageSize + 'px';
+            container.children[0].style.width = imageSize + 'px';
+            container.children[0].style.height = imageSize + 'px';
         }
 
        
@@ -404,6 +414,7 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                 image.children[0].style.height = newVal + 'px';
             })
             range_percent.innerHTML = Math.round((size_range.value / 88) * 100) + '%';
+            imageSize = newVal;
         }
         size_range.ondblclick = () => {
             setSizeToDefault();
@@ -413,16 +424,19 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
             setSizeToDefault();
         }
 
+        
         size_range.oninput = () => {
             let images = scroll_overwflow.querySelectorAll('.imageContainer');
+            let newVal = parseInt(size_range.value) + 60;
             images.forEach(image => {
-                let newVal = parseInt(size_range.value) + 60;
                 image.style.width = newVal + 'px';
                 image.style.height = newVal + 'px';
                 image.children[0].style.width = newVal + 'px';
                 image.children[0].style.height = newVal + 'px';
             });
             range_percent.innerHTML = Math.round((size_range.value / 88) * 100) + '%';
+            imageSize = newVal;
+            console.log(imageSize);
         }
 
         (function() {

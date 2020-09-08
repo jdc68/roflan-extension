@@ -89,8 +89,8 @@
 }
 
 #menu_wrapper ul li :first-child {
-    height: 86px;
-    width: 86px;
+    /* height: 86px;
+    width: 86px; */
     object-fit: cover;
     cursor: pointer;
     border-radius: 4px;
