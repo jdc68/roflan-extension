@@ -71,10 +71,6 @@ var settings = {
 var peerId;
 var peer_type;
 
-function uploadAudio() {
-
-}
-
 function sendSticker(doc_id, type) {
     let random_id = Math.random() * 10000000;
     chrome.runtime.sendMessage({ reloaded: true });
@@ -106,8 +102,12 @@ function addToggleOnHover(obj1, obj2) {
         obj2.style.opacity = '1';
     }
     obj1.onmouseout = () => {
-        obj2.style.visibility = 'hidden';
-        obj2.style.opacity = '0';
+        const active = document.activeElement;
+        const searchInput = document.querySelector('#roflan_search')
+        if (active != searchInput) {
+            obj2.style.visibility = 'hidden';
+            obj2.style.opacity = '0';
+        }
     }
 }
 
@@ -146,7 +146,6 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
             };
         })
 
-
         let scroll_overwflow = document.createElement('div');
         scroll_overwflow.className = 'scroll_overwflow';
 
@@ -160,6 +159,7 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
         search_input.type = 'text';
         search_input.className = 'text ts_input'
         search_input.id = 'roflan_search'
+        search_input.setAttribute('autocomplete', 'off');
         scroll_overwflow.appendChild(search_input);
 
         let fav_images_wrapp = document.createElement('ul');
@@ -375,8 +375,7 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                     favourites_wrapp.style.display = 'block';
                 } else {
                     favourites_wrapp.style.display = 'none';
-                }
-                
+                }            
             }
         }
 
