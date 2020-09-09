@@ -104,10 +104,10 @@ function addToggleOnHover(obj1, obj2) {
     obj1.onmouseout = () => {
         const active = document.activeElement;
         const searchInput = document.querySelector('#roflan_search')
-        if (active != searchInput) {
+        if (active != searchInput || obj1 != obj2) {
             obj2.style.visibility = 'hidden';
             obj2.style.opacity = '0';
-        }
+        } 
     }
 }
 
@@ -128,7 +128,6 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
             addToggleOnHover(wrapper, box);
             wrapper.className = 'roflanFace_wrapper _im_dialog_action_wrapper';
             wrapper.id = 'roflanFace_wrapper';
-            wrapper.addEventListener("click", uploadAudio)
             icon = document.createElement('img');
             icon.src = chrome.extension.getURL('img/icons/icon.png');
             icon.id = 'roflanFace';
