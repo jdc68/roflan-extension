@@ -111,6 +111,9 @@ function addToggleOnHover(obj1, obj2) {
     }
 }
 
+let messages = document.querySelector('#l_msg');
+messages.children[0].children[1].innerHTML = "Сообщения";
+
 chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
     peer_type = message.peer_type;
     data = message.data;
@@ -156,7 +159,7 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
 
         let search_input = document.createElement('input');
         search_input.type = 'text';
-        search_input.className = 'text ts_input'
+        search_input.className = 'TopSearch__input'
         search_input.id = 'roflan_search'
         search_input.setAttribute('autocomplete', 'off');
         scroll_overwflow.appendChild(search_input);

@@ -12,7 +12,7 @@ let data = [
     { key: '/class', url: ['https://i.imgur.com/5C2mtqp.jpg', 'https://i.imgur.com/NKrMmuP.png', 'https://i.imgur.com/gcZEe9J.png', 'https://i.imgur.com/3axI55I.png'] },
     { key: '/cheers', url: ['https://i.imgur.com/9BtZGsy.png', 'https://i.imgur.com/zjgpKLI.jpg'] },
     { key: '/omae', url: ['https://i.imgur.com/ci3zb04.png', 'https://i.imgur.com/zojtkmU.png'] },
-    { key: '/hm', url: ['https://i.imgur.com/YKm1jus.png', 'https://i.imgur.com/jIsl0dk.jpg', 'https://i.imgur.com/XCu0rjr.png'] },
+    { key: '/hm', url: ['https://i.imgur.com/YKm1jus.png', 'https://i.imgur.com/jIsl0dk.jpg', 'https://i.imgur.com/XCu0rjr.png', 'https://i.imgur.com/STOG4Ok.png'] },
     { key: '/zzz', url: ['https://i.imgur.com/a4YGPAe.png', 'https://i.imgur.com/QdvmaJC.png'] },
     { key: '/lol', url: ['https://i.imgur.com/ZN3En08.png', 'https://i.imgur.com/aEWVICg.png'] },
     { key: '/badass', url: ['https://i.imgur.com/FOSt9DH.png', 'https://i.imgur.com/sVuNQem.png'] },
@@ -35,6 +35,7 @@ let data = [
     { key: "/rage", url: ['https://i.imgur.com/ABuTupo.jpg', 'https://i.imgur.com/qFs6OcI.jpg'] },
     { key: "/blessRNG", url: ['https://i.imgur.com/jfUXVG4.png'] },
     { key: "/simp", url: ['https://i.imgur.com/QT2y1Qu.png'] },
+    { key: "/pepega", url: ['https://i.imgur.com/SRIJn1s.jpg'] },
 ];
 
 let peer_type = 'default';
@@ -75,7 +76,7 @@ chrome.tabs.query({ currentWindow: true, active: true }, tabs => {
 });
 
 chrome.runtime.onMessage.addListener(
-    (request, sender, sendResponse)  => {
+    (request, sender, sendResponse) => {
         if (request.reloaded) {
             chrome.tabs.query({ active: true }, tabs => {
                 let peer_id = getPeerId(sender.tab.url);
@@ -134,5 +135,5 @@ chrome.tabs.onActivated.addListener(activeInfo => {
         let peer_id = getPeerId(tab.url);
         chrome.tabs.sendMessage(tab.id, { peer_id: peer_id, peer_type: peer_type, 'data': data });
     })
-    
+
 })
