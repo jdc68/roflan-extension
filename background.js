@@ -27,7 +27,7 @@ let data = [
     { key: '/roger', url: ['https://i.imgur.com/ava9smI.png'] },
     { key: '/iwatch', url: ['https://i.imgur.com/dqOAyT9.png'] },
     { key: '/smork', url: ['https://i.imgur.com/FxUUAwy.png'] },
-    { key: '/brain', url: ['https://i.imgur.com/qvqwHxp.png', 'https://i.imgur.com/91WF7yt.png'] },
+    { key: '/brain', url: ['https://i.imgur.com/bqZE4LN.jpg', 'https://i.imgur.com/qvqwHxp.png', 'https://i.imgur.com/91WF7yt.png'] },
     { key: '/xd', url: ['https://i.imgur.com/UXBjbVx.png', 'https://i.imgur.com/AXqugk0.png'] },
     { key: '/cringe', url: ['https://i.imgur.com/9iVw8Hc.jpg'] },
     { key: '/fuck', url: ['https://i.imgur.com/zCQfMTo.png', 'https://i.imgur.com/w6u8NHG.png', 'https://i.imgur.com/pQvWr1V.png'] },
@@ -35,7 +35,8 @@ let data = [
     { key: "/rage", url: ['https://i.imgur.com/ABuTupo.jpg', 'https://i.imgur.com/qFs6OcI.jpg'] },
     { key: "/blessRNG", url: ['https://i.imgur.com/jfUXVG4.png'] },
     { key: "/simp", url: ['https://i.imgur.com/QT2y1Qu.png'] },
-    { key: "/pepega", url: ['https://i.imgur.com/SRIJn1s.jpg'] },
+    { key: "/pepega", url: ['https://i.imgur.com/SRIJn1s.jpg', 'https://i.imgur.com/CJvQS7z.jpg'] },
+    { key: "/killmepls", url: ['https://i.imgur.com/6m0tNwo.jpg'] },
 ];
 
 let peer_type = 'default';
