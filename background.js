@@ -12,7 +12,7 @@ let data = [
     { key: '/class', url: ['https://i.imgur.com/5C2mtqp.jpg', 'https://i.imgur.com/NKrMmuP.png', 'https://i.imgur.com/gcZEe9J.png', 'https://i.imgur.com/3axI55I.png'] },
     { key: '/cheers', url: ['https://i.imgur.com/9BtZGsy.png', 'https://i.imgur.com/zjgpKLI.jpg'] },
     { key: '/omae', url: ['https://i.imgur.com/ci3zb04.png', 'https://i.imgur.com/zojtkmU.png'] },
-    { key: '/hm', url: ['https://i.imgur.com/YKm1jus.png', 'https://i.imgur.com/jIsl0dk.jpg', 'https://i.imgur.com/XCu0rjr.png', 'https://i.imgur.com/STOG4Ok.png'] },
+    { key: '/hm', url: ['https://i.imgur.com/bRlP8wR.png', 'https://i.imgur.com/YKm1jus.png', 'https://i.imgur.com/jIsl0dk.jpg', 'https://i.imgur.com/XCu0rjr.png', 'https://i.imgur.com/STOG4Ok.png'] },
     { key: '/zzz', url: ['https://i.imgur.com/a4YGPAe.png', 'https://i.imgur.com/QdvmaJC.png'] },
     { key: '/lol', url: ['https://i.imgur.com/ZN3En08.png', 'https://i.imgur.com/aEWVICg.png'] },
     { key: '/badass', url: ['https://i.imgur.com/FOSt9DH.png', 'https://i.imgur.com/sVuNQem.png'] },
