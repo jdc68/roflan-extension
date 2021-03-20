@@ -37,7 +37,7 @@ function setAttributes(el, attrs) {
 
 async function pasteImgToForm(url) {
     var dT = null;
-    try { dT = new DataTransfer(); } catch (e) {}
+    try { dT = new DataTransfer(); } catch (e) { }
     var evt = new ClipboardEvent('paste', { clipboardData: dT });
     let response = await fetch(url);
     let data = await response.blob();
@@ -107,14 +107,14 @@ function addToggleOnHover(obj1, obj2) {
         if (active != searchInput || obj1 != obj2) {
             obj2.style.visibility = 'hidden';
             obj2.style.opacity = '0';
-        } 
+        }
     }
 }
 
 let messages = document.querySelector('#l_msg');
 messages.children[0].children[1].innerHTML = "Сообщения";
 
-chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     peer_type = message.peer_type;
     data = message.data;
     if (message.peer_id !== undefined) {
@@ -301,7 +301,7 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
             container.children[0].style.height = imageSize + 'px';
         }
 
-       
+
 
         chrome.storage.local.get('favourites', () => {
             for (let obj in data) {
@@ -347,15 +347,15 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
             let images = []
             let favs = []
             images = document.querySelectorAll(".imageContainer");
-            
+
             for (img in images) {
                 if (images[img].parentNode != undefined) {
-                    images[img].parentNode.remove() 
+                    images[img].parentNode.remove()
                 }
             }
-      
+
             let toDisplay = searchImage(search_input.value, data)
-            if (images.length === 0 ) {
+            if (images.length === 0) {
                 favourites_wrapp.style.display = 'none';
             }
             for (let obj in toDisplay) {
@@ -365,8 +365,8 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                         index = i;
                     }
                 }
-                
-                if(data[index].favourite) {
+
+                if (data[index].favourite) {
                     favs.push(data[index]);
                     createFavourite(index);
                 } else {
@@ -377,7 +377,7 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                     favourites_wrapp.style.display = 'block';
                 } else {
                     favourites_wrapp.style.display = 'none';
-                }            
+                }
             }
         }
 
@@ -425,7 +425,7 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
             setSizeToDefault();
         }
 
-        
+
         size_range.oninput = () => {
             let images = scroll_overwflow.querySelectorAll('.imageContainer');
             let newVal = parseInt(size_range.value) + 60;
@@ -440,7 +440,7 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
             console.log(imageSize);
         }
 
-        (function() {
+        (function () {
             let sticker_wrapp = document.querySelector('.im-chat-input--mihail');
             if (sticker_wrapp === null) {
                 sticker_wrapp = document.createElement('div');
@@ -474,7 +474,7 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
 
                         document.querySelector('#prompt_button').addEventListener('click', () => {
                             chrome.runtime.sendMessage({ login: true })
-                            chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
+                            chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                                 if (message.accessTokenReceived) {
                                     cont.style.filter = 'none';
                                     prompt_holder.style.display = 'none';
@@ -490,7 +490,7 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                     let sticker_element = document.createElement('a');
                     sticker_element.className = 'emoji_sticker_item sticker_item_16583 __loaded';
 
-                    sticker_element.onclick = function() { sendSticker(sticker.id, peer_type) };
+                    sticker_element.onclick = function () { sendSticker(sticker.id, peer_type) };
                     stickers_wrapp.appendChild(sticker_element);
                     let sticker_prev = document.createElement('img');
                     sticker_prev.className = 'emoji_sticker_image';
