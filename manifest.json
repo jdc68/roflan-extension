@@ -1,33 +1,32 @@
 {
-    "name": "Roflan-Extension",
-    "version": "2.3",
-    "description": "Tool to quickly respond with roflan-images",
-    "manifest_version": 2,
-    "browser_action": {
-        "default_popup": "popup/popup.html"
-    },
-    "icons": { "128": "img/icons/icon.png" },
-    "permissions": [
-        "storage",
-        "activeTab",
-        "tabs",
-        "notifications",
-        "http://*/",
-        "https://*/"
-    ],
-    "content_scripts": [{
-        "css": ["style.css"],
-        "js": ["main.js"],
-        "matches": ["https://vk.com/*"],
-        "run_at": "document_end"
-    }],
-    "background": {
-        "scripts": ["background.js"],
-        "persistent": false
-    },
-    "web_accessible_resources": [
-        "style.css",
-        "img/*"
-    ],
-    "content_security_policy": "script-src 'self' https://ajax.googleapis.com; object-src 'self'"
+  "name": "Roflan-Extension",
+  "version": "2.5",
+  "description": "Tool to quickly respond with roflan-images",
+  "manifest_version": 2,
+  "browser_action": {
+    "default_popup": "popup/popup.html"
+  },
+  "icons": { "128": "img/icons/icon.png" },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "tabs",
+    "notifications",
+    "http://*/",
+    "https://*/"
+  ],
+  "content_scripts": [
+    {
+      "css": ["style.css"],
+      "js": ["main.js"],
+      "matches": ["https://vk.com/*"],
+      "run_at": "document_end"
+    }
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "web_accessible_resources": ["style.css", "img/*"],
+  "content_security_policy": "script-src 'self' https://ajax.googleapis.com; object-src 'self'"
 }
