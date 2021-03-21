@@ -50,6 +50,7 @@ async function pasteImgToForm(url) {
 }
 
 function imageClickHandler(obj) {
+    console.log('test');
     let num = Math.floor(Math.random() * data[obj].url.length);
     let url = data[obj].url[num];
     chrome.storage.local.get({ 'images_data': [] }, res => {
@@ -232,13 +233,17 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 }
 
                 let images = fav_images_wrapp.querySelectorAll('.fav_image');
+                let titles = fav_images_wrapp.querySelectorAll('.imageInfo');
 
-                images.forEach(image => {
-                    let key = image.getAttribute('key');
-                    image.addEventListener('click', () => {
+                for (i = 0; i < images.length; i++) {
+                    let key = images[i].getAttribute('key');
+                    images[i].addEventListener('click', () => {
                         imageClickHandler(key);
                     });
-                })
+                    titles[i].addEventListener('click', () => {
+                        imageClickHandler(key);
+                    });
+                }
             } else {
                 images_wrapp.style.marginTop = '44px';
                 favourites_wrapp.style.display = 'none';
