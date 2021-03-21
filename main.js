@@ -396,7 +396,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         slider_container.id = 'size_slider_container';
         let size_range = document.createElement('input');
         size_range.type = 'range';
-        size_range.value = 26;
+        const defaultSize = 26;
         size_range.min = 0;
         size_range.max = 88;
         size_range.id = 'size_range'
@@ -405,16 +405,23 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         size_range_name.innerHTML = 'Размер рофланов: '
         let range_percent = document.createElement('p');
         range_percent.id = 'range_percent';
-        range_percent.innerHTML = Math.round((size_range.value / 88) * 100) + '%';
+        chrome.storage.local.get(['imgSize'], result => {
+            if (result != null) {
+                setImageSize(result.imgSize);
+                size_range.value = result.imgSize;
+            } else {
+                setImageSize(defaultSize);
+                size_range.value = result.defaultSize;
+            }
+        })
         slider_container.appendChild(size_range_name);
         slider_container.appendChild(size_range);
         slider_container.appendChild(range_percent);
         box_footer.appendChild(slider_container);
         box.appendChild(box_footer);
 
-        function setSizeToDefault() {
-            size_range.value = 26;
-            let newVal = parseInt(size_range.value) + 60;
+        function setImageSize(size) {
+            let newVal = size + 60;
             let images = scroll_overflow.querySelectorAll('.imageContainer');
             images.forEach(image => {
                 image.style.width = newVal + 'px';
@@ -422,30 +429,22 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 image.children[0].style.width = newVal + 'px';
                 image.children[0].style.height = newVal + 'px';
             })
-            range_percent.innerHTML = Math.round((size_range.value / 88) * 100) + '%';
+            range_percent.innerHTML = Math.round((size / 88) * 100) + '%';
             imageSize = newVal;
+            chrome.storage.local.set({ imgSize: size })
         }
         size_range.ondblclick = () => {
-            setSizeToDefault();
+            size_range.value = defaultSize;
+            setImageSize(defaultSize);
         }
 
         range_percent.onclick = () => {
-            setSizeToDefault();
+            size_range.value = defaultSize;
+            setImageSize(defaultSize);
         }
 
-
         size_range.oninput = () => {
-            let images = scroll_overflow.querySelectorAll('.imageContainer');
-            let newVal = parseInt(size_range.value) + 60;
-            images.forEach(image => {
-                image.style.width = newVal + 'px';
-                image.style.height = newVal + 'px';
-                image.children[0].style.width = newVal + 'px';
-                image.children[0].style.height = newVal + 'px';
-            });
-            range_percent.innerHTML = Math.round((size_range.value / 88) * 100) + '%';
-            imageSize = newVal;
-            console.log(imageSize);
+            setImageSize(parseInt(size_range.value));
         }
 
         (function () {
