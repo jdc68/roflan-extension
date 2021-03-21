@@ -148,8 +148,12 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             };
         })
 
-        let scroll_overwflow = document.createElement('div');
-        scroll_overwflow.className = 'scroll_overwflow';
+        let scroll_overflow = document.createElement('div');
+        scroll_overflow.className = 'scroll_overflow';
+        let scroll_content = document.createElement('div');
+        scroll_content.className = 'scroll_content';
+        scroll_overflow.appendChild(scroll_content);
+
 
         let favourites_wrapp = document.createElement('div');
         favourites_wrapp.className = 'fav_wrapp';
@@ -162,12 +166,12 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         search_input.className = 'TopSearch__input'
         search_input.id = 'roflan_search'
         search_input.setAttribute('autocomplete', 'off');
-        scroll_overwflow.appendChild(search_input);
+        scroll_content.appendChild(search_input);
 
         let fav_images_wrapp = document.createElement('ul');
         fav_images_wrapp.id = 'fav_images';
         favourites_wrapp.appendChild(fav_images_wrapp);
-        scroll_overwflow.appendChild(favourites_wrapp);
+        scroll_content.appendChild(favourites_wrapp);
 
         let imageSize = 86;
 
@@ -222,6 +226,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
         chrome.storage.local.get('favourites', result => {
             if (result.favourites.length > 0 && result.favourites !== undefined) {
+                images_wrapp.style.marginTop = '7px';
                 for (obj in result.favourites) {
                     createFavourite(result.favourites[obj].imageKey);
                 }
@@ -235,14 +240,15 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                     });
                 })
             } else {
+                images_wrapp.style.marginTop = '44px';
                 favourites_wrapp.style.display = 'none';
             }
         })
 
         var images_wrapp = document.createElement('ul');
         images_wrapp.id = 'images';
-        scroll_overwflow.appendChild(images_wrapp);
-        box.appendChild(scroll_overwflow);
+        scroll_content.appendChild(images_wrapp);
+        box.appendChild(scroll_overflow);
 
         function createDefault(obj) {
             let container = document.createElement('div');
@@ -285,6 +291,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                         var favourites = result.favourites;
                         favourites.push({ imageKey: obj });
                         chrome.storage.local.set({ favourites: favourites });
+                        images_wrapp.style.marginTop = '7px';
                     })
                     fav_icon.src = chrome.extension.getURL('img/icons/fav2.png');
                     fav_icon.className = 'fav_icon fav_icon_added'
@@ -324,6 +331,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                     chrome.storage.local.get('favourites', result => {
                         if (result.favourites.length === 0) {
                             favourites_wrapp.style.display = 'none';
+                            images_wrapp.style.marginTop = '44px';
                         }
                     })
                 })
@@ -407,7 +415,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         function setSizeToDefault() {
             size_range.value = 26;
             let newVal = parseInt(size_range.value) + 60;
-            let images = scroll_overwflow.querySelectorAll('.imageContainer');
+            let images = scroll_overflow.querySelectorAll('.imageContainer');
             images.forEach(image => {
                 image.style.width = newVal + 'px';
                 image.style.height = newVal + 'px';
@@ -427,7 +435,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
 
         size_range.oninput = () => {
-            let images = scroll_overwflow.querySelectorAll('.imageContainer');
+            let images = scroll_overflow.querySelectorAll('.imageContainer');
             let newVal = parseInt(size_range.value) + 60;
             images.forEach(image => {
                 image.style.width = newVal + 'px';
