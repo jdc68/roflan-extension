@@ -37,7 +37,7 @@ function setAttributes(el, attrs) {
 
 async function pasteImgToForm(url) {
     var dT = null;
-    try { dT = new DataTransfer(); } catch (e) { }
+    try { dT = new DataTransfer(); } catch (e) {}
     var evt = new ClipboardEvent('paste', { clipboardData: dT });
     let response = await fetch(url);
     let data = await response.blob();
@@ -115,7 +115,7 @@ function addToggleOnHover(obj1, obj2) {
 let messages = document.querySelector('#l_msg');
 messages.children[0].children[1].innerHTML = "Сообщения";
 
-chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
     peer_type = message.peer_type;
     data = message.data;
     if (message.peer_id !== undefined) {
@@ -343,13 +343,73 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             })
         }
 
+        function layoutFix(str, reverse) {
+            replacer = {
+                "q": "й",
+                "w": "ц",
+                "e": "у",
+                "r": "к",
+                "t": "е",
+                "y": "н",
+                "u": "г",
+                "i": "ш",
+                "o": "щ",
+                "p": "з",
+                "[": "х",
+                "]": "ъ",
+                "a": "ф",
+                "s": "ы",
+                "d": "в",
+                "f": "а",
+                "g": "п",
+                "h": "р",
+                "j": "о",
+                "k": "л",
+                "l": "д",
+                ";": "ж",
+                "'": "э",
+                "z": "я",
+                "x": "ч",
+                "c": "с",
+                "v": "м",
+                "b": "и",
+                "n": "т",
+                "m": "ь",
+                ",": "б",
+                ".": "ю",
+                "/": ".",
+            };
+
+            reverse && Object.keys(replacer).forEach(key => {
+                let v = replacer[key]
+                delete(replacer[key])
+                replacer[v] = key
+            })
+
+            for (i = 0; i < str.length; i++) {
+                if (replacer[str[i].toLowerCase()] != undefined) {
+
+                    if (str[i] == str[i].toLowerCase()) {
+                        replace = replacer[str[i].toLowerCase()];
+                    } else if (str[i] == str[i].toUpperCase()) {
+                        replace = replacer[str[i].toLowerCase()].toUpperCase();
+                    }
+
+                    str = str.replace(str[i], replace);
+                }
+            }
+
+            return str;
+        }
+
         function searchImage(value, data) {
+            console.log(value);
+            value = value.toLowerCase();
+            let fixed_value = layoutFix(value, true);
             let filtered_data = [];
             for (item in data) {
-                value = search_input.value.toLowerCase();
                 let key = data[item].key.toLowerCase();
-
-                if (key.includes(value)) {
+                if (key.includes(fixed_value)) {
                     filtered_data.push(data[item]);
                 }
             }
@@ -452,7 +512,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             setImageSize(parseInt(size_range.value));
         }
 
-        (function () {
+        (function() {
             let sticker_wrapp = document.querySelector('.im-chat-input--mihail');
             if (sticker_wrapp === null) {
                 sticker_wrapp = document.createElement('div');
@@ -486,7 +546,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
                         document.querySelector('#prompt_button').addEventListener('click', () => {
                             chrome.runtime.sendMessage({ login: true })
-                            chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+                            chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                                 if (message.accessTokenReceived) {
                                     cont.style.filter = 'none';
                                     prompt_holder.style.display = 'none';
@@ -502,7 +562,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                     let sticker_element = document.createElement('a');
                     sticker_element.className = 'emoji_sticker_item sticker_item_16583 __loaded';
 
-                    sticker_element.onclick = function () { sendSticker(sticker.id, peer_type) };
+                    sticker_element.onclick = function() { sendSticker(sticker.id, peer_type) };
                     stickers_wrapp.appendChild(sticker_element);
                     let sticker_prev = document.createElement('img');
                     sticker_prev.className = 'emoji_sticker_image';

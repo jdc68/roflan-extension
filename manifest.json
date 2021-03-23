@@ -1,6 +1,6 @@
 {
   "name": "Roflan-Extension",
-  "version": "2.5",
+  "version": "2.6",
   "description": "Tool to quickly respond with roflan-images",
   "manifest_version": 2,
   "browser_action": {
