@@ -1,5 +1,4 @@
 let data;
-
 const stickers = [
     { key: '001', prev_url: [], id: '543114817' },
     { key: '002', prev_url: [], id: '543114818' },
@@ -37,7 +36,7 @@ function setAttributes(el, attrs) {
 
 async function pasteImgToForm(url) {
     var dT = null;
-    try { dT = new DataTransfer(); } catch (e) {}
+    try { dT = new DataTransfer(); } catch (e) { }
     var evt = new ClipboardEvent('paste', { clipboardData: dT });
     let response = await fetch(url);
     let data = await response.blob();
@@ -50,7 +49,6 @@ async function pasteImgToForm(url) {
 }
 
 function imageClickHandler(obj) {
-    console.log('test');
     let num = Math.floor(Math.random() * data[obj].url.length);
     let url = data[obj].url[num];
     chrome.storage.local.get({ 'images_data': [] }, res => {
@@ -114,11 +112,15 @@ function addToggleOnHover(obj1, obj2) {
 
 let messages = document.querySelector('#l_msg');
 messages.children[0].children[1].innerHTML = "Сообщения";
+document.title = "Сообщения";
 
-chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     peer_type = message.peer_type;
     data = message.data;
+    console.log(message.peer_id)
+
     if (message.peer_id !== undefined) {
+        console.log("test")
         peerId = message.peer_id;
         let box = document.createElement('div');
         const element = document.getElementsByClassName('im-page--aside')[0];
@@ -382,7 +384,7 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
 
             reverse && Object.keys(replacer).forEach(key => {
                 let v = replacer[key]
-                delete(replacer[key])
+                delete (replacer[key])
                 replacer[v] = key
             })
 
@@ -403,7 +405,6 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
         }
 
         function searchImage(value, data) {
-            console.log(value);
             value = value.toLowerCase();
             let fixed_value = layoutFix(value, true);
             let filtered_data = [];
@@ -512,7 +513,7 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
             setImageSize(parseInt(size_range.value));
         }
 
-        (function() {
+        (function () {
             let sticker_wrapp = document.querySelector('.im-chat-input--mihail');
             if (sticker_wrapp === null) {
                 sticker_wrapp = document.createElement('div');
@@ -546,7 +547,7 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
 
                         document.querySelector('#prompt_button').addEventListener('click', () => {
                             chrome.runtime.sendMessage({ login: true })
-                            chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
+                            chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                                 if (message.accessTokenReceived) {
                                     cont.style.filter = 'none';
                                     prompt_holder.style.display = 'none';
@@ -562,7 +563,7 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                     let sticker_element = document.createElement('a');
                     sticker_element.className = 'emoji_sticker_item sticker_item_16583 __loaded';
 
-                    sticker_element.onclick = function() { sendSticker(sticker.id, peer_type) };
+                    sticker_element.onclick = function () { sendSticker(sticker.id, peer_type) };
                     stickers_wrapp.appendChild(sticker_element);
                     let sticker_prev = document.createElement('img');
                     sticker_prev.className = 'emoji_sticker_image';

@@ -27,6 +27,6 @@
     "scripts": ["background.js"],
     "persistent": false
   },
-  "web_accessible_resources": ["style.css", "img/*"],
+  "web_accessible_resources": ["style.css", "img/*", "compressed_images/*"],
   "content_security_policy": "script-src 'self' https://ajax.googleapis.com; object-src 'self'"
 }

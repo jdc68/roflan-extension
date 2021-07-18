@@ -149,6 +149,10 @@
   left: 0;
 }
 
+.randIcon :hover {
+  opacity: 0.75;
+}
+
 .fav_wrapp p {
   margin-left: 43px;
   opacity: 0.5;
