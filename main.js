@@ -48,9 +48,22 @@ async function pasteImgToForm(url) {
     document.querySelector('.im_editable').dispatchEvent(evt);
 }
 
-function imageClickHandler(obj) {
+function randImageClickHandler(obj) {
     let num = Math.floor(Math.random() * data[obj].url.length);
     let url = data[obj].url[num];
+    chrome.storage.local.get({ 'images_data': [] }, res => {
+        if (res.images_data[obj].count === undefined) {
+            res.images_data[obj].count = 1;
+        } else {
+            res.images_data[obj].count++;
+        }
+        chrome.storage.local.set({ images_data: res.images_data })
+        pasteImgToForm(url);
+    })
+}
+
+function imageClickHandler(obj, key) {
+    let url = data[obj].url[key];
     chrome.storage.local.get({ 'images_data': [] }, res => {
         if (res.images_data[obj].count === undefined) {
             res.images_data[obj].count = 1;
@@ -104,8 +117,8 @@ function addToggleOnHover(obj1, obj2) {
         const active = document.activeElement;
         const searchInput = document.querySelector('#roflan_search')
         if (active != searchInput || obj1 != obj2) {
-            obj2.style.visibility = 'visible';
-            obj2.style.opacity = '1';
+            obj2.style.visibility = 'hidden';
+            obj2.style.opacity = '0';
         }
     })
 }
@@ -183,6 +196,8 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
             fav_images_wrapp.appendChild(li);
             li.appendChild(container);
             let imagesContainer = document.createElement('div');
+            imagesContainer.style.right = '0px';
+            imagesContainer.className = 'innerImageContainer'
             container.appendChild(imagesContainer)
 
             data[key].url.forEach(url => {
@@ -205,6 +220,62 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                 let randImg = document.createElement('img');
                 setAttributes(randImg, { 'src': randUrl, 'class': 'randIcon' });
                 container.appendChild(randImg);
+                randImg.onclick = () => { randImageClickHandler(key) }
+                randImgContainer = document.createElement('div');
+                randImgContainer.className = 'randIconContainer';
+                addToggleOnHover(container, randImgContainer);
+                randImgContainer.appendChild(randImg);
+                container.appendChild(randImgContainer);
+
+                // Arrows
+                let arrows = document.createElement('div');
+                addToggleOnHover(container, arrows);
+                let arrow_left = document.createElement('div');
+                let arrow_right = document.createElement('div');
+
+                arrow_left.className = 'nav_arr';
+                arrow_left.style.left = '5px';
+                arrow_left.style.backgroundPositionY = '-16px';
+                arrow_left.style.display = 'none';
+                arrow_left.onclick = () => { cycleImages(false) }
+
+                arrow_right.className = 'nav_arr';
+                arrow_right.style.right = '5px'
+                arrow_right.style.backgroundPositionY = '-99px';
+                arrow_right.onclick = () => { cycleImages(true) }
+
+                function cycleImages(toRight) {
+                    let offset = parseInt(imagesContainer.style.right.replace('px', ''));
+                    let step = parseInt(imagesContainer.style.width.replace('px', ''));
+                    let maxOffset = data[key].url.length * step;
+                    if (toRight)
+                    //Cycle images to the right
+                        imagesContainer.style.right = offset + step + 'px';
+                    else
+                    //Cycle images to the left
+                        imagesContainer.style.right = offset - step + 'px';
+
+                    let newOffset = parseInt(imagesContainer.style.right.replace('px', ''));
+                    // Hide arrows conditionally
+                    if (newOffset > 0)
+                        arrow_left.style.display = 'block';
+                    if (newOffset <= 0)
+                        arrow_left.style.display = 'none';
+                    if (newOffset < maxOffset)
+                        arrow_right.style.display = 'block';
+                    if (newOffset >= maxOffset - step)
+                        arrow_right.style.display = 'none';
+
+                    console.log('step: ' + step)
+                    console.log('maxOffset: ' + maxOffset)
+                    console.log('newOffset: ' + newOffset)
+                }
+
+                arrows.className = 'nav_arrows'
+
+                arrows.appendChild(arrow_left);
+                arrows.appendChild(arrow_right);
+                container.appendChild(arrows);
             };
             info.innerHTML = text;
             container.appendChild(info);
@@ -245,15 +316,26 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                 let images = fav_images_wrapp.querySelectorAll('.fav_image');
                 let titles = fav_images_wrapp.querySelectorAll('.imageInfo');
 
-                for (i = 0; i < images.length; i++) {
-                    let key = images[i].getAttribute('key');
-                    images[i].addEventListener('click', () => {
-                        imageClickHandler(key);
-                    });
-                    titles[i].addEventListener('click', () => {
-                        imageClickHandler(key);
-                    });
-                }
+                images.forEach(img => {
+                    img.onclick = () => {
+                        let key = img.getAttribute('key')
+                        let imagesContainer = img.parentNode;
+                        let offset = parseInt(imagesContainer.style.right.replace('px', ''));
+                        let step = parseInt(imagesContainer.style.width.replace('px', ''));
+                        let currentImgIndex = offset / step;
+                        imageClickHandler(key, currentImgIndex);
+                    };
+                })
+                titles.forEach(title => {
+                    title.onclick = () => {
+                        let key = title.getAttribute('key')
+                        let imagesContainer = title.parentElement.children[0];
+                        let offset = parseInt(imagesContainer.style.right.replace('px', ''));
+                        let step = parseInt(imagesContainer.style.width.replace('px', ''));
+                        let currentImgIndex = offset / step;
+                        imageClickHandler(key, currentImgIndex);
+                    };
+                })
             } else {
                 images_wrapp.style.marginTop = '44px';
                 favourites_wrapp.style.display = 'none';
@@ -265,7 +347,7 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
         scroll_content.appendChild(images_wrapp);
         box.appendChild(scroll_overflow);
 
-        function createDefault(obj) {
+        function createDefault(key) {
             let container = document.createElement('div');
             container.className = 'imageContainer';
             let li = document.createElement('li');
@@ -276,27 +358,42 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
             imagesContainer.className = 'innerImageContainer'
             container.appendChild(imagesContainer)
 
-            data[obj].url.forEach(url => {
+            data[key].url.forEach(url => {
                 let img = document.createElement('img');
                 imagesContainer.appendChild(img);
-                setAttributes(img, { 'src': url, 'key': obj, 'class': 'image' });
-                img.onclick = () => { imageClickHandler(obj) };
+                setAttributes(img, { 'src': url, 'key': key, 'class': 'image' });
+                img.onclick = () => {
+                    let offset = parseInt(imagesContainer.style.right.replace('px', ''));
+                    let step = parseInt(imagesContainer.style.width.replace('px', ''));
+                    let currentImgIndex = offset / step;
+                    imageClickHandler(key, currentImgIndex);
+                };
             })
 
             var info = document.createElement('div');
             info.className = 'imageInfo';
-            info.onclick = () => { imageClickHandler(obj) }
-            if (data[obj].url.length == 1) {
-                var text = data[obj].key;
+            info.onclick = () => {
+                let offset = parseInt(imagesContainer.style.right.replace('px', ''));
+                let step = parseInt(imagesContainer.style.width.replace('px', ''));
+                let currentImgIndex = offset / step;
+                imageClickHandler(key, currentImgIndex);
+            };
+            if (data[key].url.length == 1) {
+                var text = data[key].key;
             } else {
-                var text = `${data[obj].key} (${(data[obj].url.length)})`;
+                var text = `${data[key].key} (${(data[key].url.length)})`;
                 let randUrl = chrome.extension.getURL('img/icons/random.png');
                 let randImg = document.createElement('img');
                 setAttributes(randImg, {
                     'src': randUrl,
                     'class': 'randIcon'
                 });
-                container.appendChild(randImg);
+                randImg.onclick = () => { randImageClickHandler(key) }
+                randImgContainer = document.createElement('div');
+                randImgContainer.className = 'randIconContainer';
+                addToggleOnHover(container, randImgContainer);
+                randImgContainer.appendChild(randImg);
+                container.appendChild(randImgContainer);
 
                 // Arrows
                 let arrows = document.createElement('div');
@@ -318,7 +415,7 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                 function cycleImages(toRight) {
                     let offset = parseInt(imagesContainer.style.right.replace('px', ''));
                     let step = parseInt(imagesContainer.style.width.replace('px', ''));
-                    let maxOffset = data[obj].url.length * step;
+                    let maxOffset = data[key].url.length * step;
                     if (toRight)
                     //Cycle images to the right
                         imagesContainer.style.right = offset + step + 'px';
@@ -358,7 +455,7 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                 if (fav.parentNode.parentNode.parentNode.id == 'images') {
                     chrome.storage.local.get({ favourites: [] }, result => {
                         var favourites = result.favourites;
-                        favourites.push({ imageKey: obj });
+                        favourites.push({ imageKey: key });
                         chrome.storage.local.set({ favourites: favourites });
                         images_wrapp.style.marginTop = '7px';
                     })
@@ -366,7 +463,7 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                     fav_icon.className = 'fav_icon fav_icon_added'
                     favourites_wrapp.style.display = 'block';
 
-                    createFavourite(obj)
+                    createFavourite(key)
                     fav.parentNode.parentNode.remove()
                 }
             }
@@ -560,8 +657,12 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
             imagesContainer.forEach(image => {
                 image.style.width = newVal + 'px';
                 image.style.height = newVal + 'px';
+                image.children[0].style.right = 0;
+                image.children[0].classList.add('notransition');
                 image.children[0].style.width = newVal + 'px';
                 image.children[0].style.height = newVal + 'px';
+                image.children[0].offsetHeight;
+                image.children[0].classList.remove('notransition');
                 var images = Array.from(image.children[0].childNodes)
                 for (child of images) {
                     child.style.width = newVal + 'px';

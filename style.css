@@ -42,18 +42,6 @@
   transform: translate(50%, -50%) rotateZ(359.9deg);
 }
 
-#menu_wrapper::before {
-  content: "";
-  position: absolute;
-  top: -9px;
-  left: 380px;
-  margin-left: -6px;
-  border-width: 6px;
-  border-style: solid;
-  border-color: transparent transparent #444446 transparent;
-  border-radius: 4px;
-}
-
 .scroll_overflow {
   height: 281px;
   overflow-y: scroll;
@@ -144,6 +132,11 @@
   background-color: #dae1e8cb;
 }
 
+.nav_arrows {
+  visibility: hidden;
+  opacity: 0;
+}
+
 .nav_arr {
   width: 12px;
   height: 18px;
@@ -152,26 +145,28 @@
   margin-top: -9px;
   background-image: url(/images/icons/pv_layer_controls.png);
   background-size: 13px 60px;
-  opacity: 0.4;
+  opacity: 0.6;
   cursor: pointer;
 }
 
-.nav_arrows {
-  visibility: hidden;
-  opacity: 0;
+.nav_arr:hover {
+  opacity: 0.9;
 }
 
-.nav_arr:hover {
-  opacity: 0.8;
+.randIconContainer {
+  opacity: 0;
+  visibility: hidden;
 }
 
 .randIcon {
   position: absolute;
   opacity: 0.5;
-  height: 20px;
+  visibility: none;
+  height: 18px;
   margin: 3px;
   bottom: 0;
   left: 0;
+  cursor: pointer;
 }
 
 .randIcon:hover {
@@ -402,4 +397,11 @@ input[type="range"]:focus::-ms-fill-upper {
 
 input[type="range"]::range-progress {
   background: #444446;
+}
+
+.notransition {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  transition: none !important;
 }
