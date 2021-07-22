@@ -117,8 +117,10 @@ function addToggleOnHover(obj1, obj2) {
         const active = document.activeElement;
         const searchInput = document.querySelector('#roflan_search')
         if (active != searchInput || obj1 != obj2) {
-            obj2.style.visibility = 'hidden';
-            obj2.style.opacity = '0';
+            // obj2.style.visibility = 'hidden';
+            // obj2.style.opacity = '0';
+            obj2.style.visibility = 'visible';
+            obj2.style.opacity = '1';
         }
     })
 }
@@ -265,10 +267,6 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                         arrow_right.style.display = 'block';
                     if (newOffset >= maxOffset - step)
                         arrow_right.style.display = 'none';
-
-                    console.log('step: ' + step)
-                    console.log('maxOffset: ' + maxOffset)
-                    console.log('newOffset: ' + newOffset)
                 }
 
                 arrows.className = 'nav_arrows'
@@ -480,8 +478,6 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
             }
         }
 
-
-
         chrome.storage.local.get('favourites', () => {
             for (let obj in data) {
                 if (!data[obj].favourite) {
@@ -489,8 +485,6 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                 }
             };
         })
-
-        search_input.oninput = searchImage(search_input.value, data);
 
         function removeFavourite(element, key) {
             createDefault(key)
@@ -611,12 +605,14 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                 } else {
                     createDefault(index);
                 }
+            }
 
-                if (favs.length > 0) {
-                    favourites_wrapp.style.display = 'block';
-                } else {
-                    favourites_wrapp.style.display = 'none';
-                }
+            if (favs.length > 0) {
+                images_wrapp.style.marginTop = '7px'
+                favourites_wrapp.style.display = 'block';
+            } else {
+                images_wrapp.style.marginTop = '44px'
+                favourites_wrapp.style.display = 'none';
             }
         }
 
@@ -627,7 +623,7 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
         slider_container.id = 'size_slider_container';
         let size_range = document.createElement('input');
         size_range.type = 'range';
-        const defaultSize = 26;
+        const defaultSize = 49;
         size_range.min = 0;
         size_range.max = 88;
         size_range.id = 'size_range'
@@ -657,12 +653,18 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
             imagesContainer.forEach(image => {
                 image.style.width = newVal + 'px';
                 image.style.height = newVal + 'px';
-                image.children[0].style.right = 0;
                 image.children[0].classList.add('notransition');
                 image.children[0].style.width = newVal + 'px';
                 image.children[0].style.height = newVal + 'px';
                 image.children[0].offsetHeight;
                 image.children[0].classList.remove('notransition');
+
+                image.children[0].style.right = 0;
+                let navArrows = image.querySelector('.nav_arrows');
+                if (navArrows != null) {
+                    navArrows.children[0].style.display = 'none';
+                    navArrows.children[1].style.display = 'block';
+                }
                 var images = Array.from(image.children[0].childNodes)
                 for (child of images) {
                     child.style.width = newVal + 'px';

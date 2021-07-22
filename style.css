@@ -21,6 +21,7 @@
   border-radius: 4px;
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
   background-size: 100% auto;
+  background-color: #ffffff;
   transition-property: opacity, visibility;
   transition-duration: 150ms, 150ms;
   transition-timing-function: ease-in-out, ease-in-out;
@@ -56,10 +57,11 @@
 #roflan_search {
   margin: 0 !important;
   margin-left: 266px !important;
-  background-color: #333336 !important;
+  /* background-color: #333336 !important; */
   position: absolute;
   z-index: 1000;
   top: 0;
+  border: 2px solid #edeef024;
 }
 
 #roflan_search :focus {
@@ -196,13 +198,17 @@
 }
 
 .fav_icon {
-  width: 20px !important;
-  height: 20px !important;
+  width: 18px !important;
   opacity: 0.5;
+  cursor: pointer;
 }
 
 .fav_icon_added {
   opacity: 1;
+}
+
+.fav_icon_added:hover {
+  filter: brightness(0.75);
 }
 
 .fav_icon:hover {
