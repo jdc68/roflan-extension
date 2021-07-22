@@ -36,7 +36,7 @@ function setAttributes(el, attrs) {
 
 async function pasteImgToForm(url) {
     var dT = null;
-    try { dT = new DataTransfer(); } catch (e) { }
+    try { dT = new DataTransfer(); } catch (e) {}
     var evt = new ClipboardEvent('paste', { clipboardData: dT });
     let response = await fetch(url);
     let data = await response.blob();
@@ -96,31 +96,28 @@ function sendSticker(doc_id, type) {
 }
 
 function addToggleOnHover(obj1, obj2) {
-    obj1.onmouseover = () => {
+    obj1.addEventListener('mouseover', () => {
         obj2.style.visibility = 'visible';
         obj2.style.opacity = '1';
-    }
-    obj1.onmouseout = () => {
+    })
+    obj1.addEventListener('mouseleave', () => {
         const active = document.activeElement;
         const searchInput = document.querySelector('#roflan_search')
         if (active != searchInput || obj1 != obj2) {
-            obj2.style.visibility = 'hidden';
-            obj2.style.opacity = '0';
+            obj2.style.visibility = 'visible';
+            obj2.style.opacity = '1';
         }
-    }
+    })
 }
 
 let messages = document.querySelector('#l_msg');
 messages.children[0].children[1].innerHTML = "Сообщения";
 document.title = "Сообщения";
 
-chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
     peer_type = message.peer_type;
     data = message.data;
-    console.log(message.peer_id)
-
     if (message.peer_id !== undefined) {
-        console.log("test")
         peerId = message.peer_id;
         let box = document.createElement('div');
         const element = document.getElementsByClassName('im-page--aside')[0];
@@ -185,14 +182,19 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             let li = document.createElement('li');
             fav_images_wrapp.appendChild(li);
             li.appendChild(container);
+            let imagesContainer = document.createElement('div');
+            container.appendChild(imagesContainer)
 
-            let img = document.createElement('img');
-            setAttributes(img, {
-                'src': data[key].url[0],
-                'key': key,
-                'class': 'fav_image'
-            });
-            container.appendChild(img);
+            data[key].url.forEach(url => {
+                let img = document.createElement('img');
+                setAttributes(img, {
+                    'src': url,
+                    'key': key,
+                    'class': 'image fav_image'
+                });
+                imagesContainer.appendChild(img);
+            })
+
             var info = document.createElement('div');
             info.className = 'imageInfo';
             if (data[key].url.length == 1) {
@@ -225,6 +227,12 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             container.style.height = imageSize + 'px';
             container.children[0].style.width = imageSize + 'px';
             container.children[0].style.height = imageSize + 'px';
+            var images = Array.from(container.children[0].childNodes)
+            for (child of images) {
+                child.style.width = imageSize + 'px';
+                child.style.height = imageSize + 'px';
+                child.style.left = imageSize * images.indexOf(child) + 'px'
+            }
         }
 
         chrome.storage.local.get('favourites', result => {
@@ -263,13 +271,18 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             let li = document.createElement('li');
             images_wrapp.appendChild(li);
             li.appendChild(container);
+            let imagesContainer = document.createElement('div');
+            imagesContainer.style.right = '0px';
+            imagesContainer.className = 'innerImageContainer'
+            container.appendChild(imagesContainer)
 
-            let img = document.createElement('img');
-            setAttributes(img, { 'src': data[obj].url[0], 'key': obj });
+            data[obj].url.forEach(url => {
+                let img = document.createElement('img');
+                imagesContainer.appendChild(img);
+                setAttributes(img, { 'src': url, 'key': obj, 'class': 'image' });
+                img.onclick = () => { imageClickHandler(obj) };
+            })
 
-            img.onclick = () => { imageClickHandler(obj) };
-
-            container.appendChild(img);
             var info = document.createElement('div');
             info.className = 'imageInfo';
             info.onclick = () => { imageClickHandler(obj) }
@@ -279,8 +292,57 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 var text = `${data[obj].key} (${(data[obj].url.length)})`;
                 let randUrl = chrome.extension.getURL('img/icons/random.png');
                 let randImg = document.createElement('img');
-                setAttributes(randImg, { 'src': randUrl, 'class': 'randIcon' });
+                setAttributes(randImg, {
+                    'src': randUrl,
+                    'class': 'randIcon'
+                });
                 container.appendChild(randImg);
+
+                // Arrows
+                let arrows = document.createElement('div');
+                addToggleOnHover(container, arrows);
+                let arrow_left = document.createElement('div');
+                let arrow_right = document.createElement('div');
+
+                arrow_left.className = 'nav_arr';
+                arrow_left.style.left = '5px';
+                arrow_left.style.backgroundPositionY = '-16px';
+                arrow_left.style.display = 'none';
+                arrow_left.onclick = () => { cycleImages(false) }
+
+                arrow_right.className = 'nav_arr';
+                arrow_right.style.right = '5px'
+                arrow_right.style.backgroundPositionY = '-99px';
+                arrow_right.onclick = () => { cycleImages(true) }
+
+                function cycleImages(toRight) {
+                    let offset = parseInt(imagesContainer.style.right.replace('px', ''));
+                    let step = parseInt(imagesContainer.style.width.replace('px', ''));
+                    let maxOffset = data[obj].url.length * step;
+                    if (toRight)
+                    //Cycle images to the right
+                        imagesContainer.style.right = offset + step + 'px';
+                    else
+                    //Cycle images to the left
+                        imagesContainer.style.right = offset - step + 'px';
+
+                    let newOffset = parseInt(imagesContainer.style.right.replace('px', ''));
+                    // Hide arrows conditionally
+                    if (newOffset > 0)
+                        arrow_left.style.display = 'block';
+                    if (newOffset <= 0)
+                        arrow_left.style.display = 'none';
+                    if (newOffset < maxOffset)
+                        arrow_right.style.display = 'block';
+                    if (newOffset >= maxOffset - step)
+                        arrow_right.style.display = 'none';
+                }
+
+                arrows.className = 'nav_arrows'
+
+                arrows.appendChild(arrow_left);
+                arrows.appendChild(arrow_right);
+                container.appendChild(arrows);
             };
             info.innerHTML = text;
             container.appendChild(info);
@@ -313,6 +375,12 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             container.style.height = imageSize + 'px';
             container.children[0].style.width = imageSize + 'px';
             container.children[0].style.height = imageSize + 'px';
+            var images = Array.from(container.children[0].childNodes)
+            for (child of images) {
+                child.style.width = imageSize + 'px';
+                child.style.height = imageSize + 'px';
+                child.style.left = imageSize * images.indexOf(child) + 'px'
+            }
         }
 
 
@@ -333,7 +401,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             chrome.storage.local.get({ favourites: [] }, result => {
                 var favourites = result.favourites;
                 let index = favourites.indexOf(key);
-                favourites.splice(index - 1, 1)
+                favourites.splice(index, 1)
                 chrome.storage.local.set({ favourites: favourites }, () => {
                     chrome.storage.local.get('favourites', result => {
                         if (result.favourites.length === 0) {
@@ -384,7 +452,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
             reverse && Object.keys(replacer).forEach(key => {
                 let v = replacer[key]
-                delete (replacer[key])
+                delete(replacer[key])
                 replacer[v] = key
             })
 
@@ -488,12 +556,18 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
         function setImageSize(size) {
             let newVal = size + 60;
-            let images = scroll_overflow.querySelectorAll('.imageContainer');
-            images.forEach(image => {
+            let imagesContainer = scroll_overflow.querySelectorAll('.imageContainer');
+            imagesContainer.forEach(image => {
                 image.style.width = newVal + 'px';
                 image.style.height = newVal + 'px';
                 image.children[0].style.width = newVal + 'px';
                 image.children[0].style.height = newVal + 'px';
+                var images = Array.from(image.children[0].childNodes)
+                for (child of images) {
+                    child.style.width = newVal + 'px';
+                    child.style.height = newVal + 'px';
+                    child.style.left = newVal * images.indexOf(child) + 'px'
+                }
             })
             range_percent.innerHTML = Math.round((size / 88) * 100) + '%';
             imageSize = newVal;
@@ -513,7 +587,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             setImageSize(parseInt(size_range.value));
         }
 
-        (function () {
+        (function() {
             let sticker_wrapp = document.querySelector('.im-chat-input--mihail');
             if (sticker_wrapp === null) {
                 sticker_wrapp = document.createElement('div');
@@ -547,7 +621,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
                         document.querySelector('#prompt_button').addEventListener('click', () => {
                             chrome.runtime.sendMessage({ login: true })
-                            chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+                            chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                                 if (message.accessTokenReceived) {
                                     cont.style.filter = 'none';
                                     prompt_holder.style.display = 'none';
@@ -563,7 +637,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                     let sticker_element = document.createElement('a');
                     sticker_element.className = 'emoji_sticker_item sticker_item_16583 __loaded';
 
-                    sticker_element.onclick = function () { sendSticker(sticker.id, peer_type) };
+                    sticker_element.onclick = function() { sendSticker(sticker.id, peer_type) };
                     stickers_wrapp.appendChild(sticker_element);
                     let sticker_prev = document.createElement('img');
                     sticker_prev.className = 'emoji_sticker_image';

@@ -96,9 +96,13 @@
   overflow: hidden;
 }
 
-#menu_wrapper ul li :first-child {
-  /* height: 86px;
-    width: 86px; */
+.innerImageContainer {
+  position: absolute;
+  transition: 0.2s ease-out;
+}
+
+.image {
+  position: absolute;
   object-fit: cover;
   cursor: pointer;
   border-radius: 4px;
@@ -140,6 +144,27 @@
   background-color: #dae1e8cb;
 }
 
+.nav_arr {
+  width: 12px;
+  height: 18px;
+  position: absolute;
+  top: 50%;
+  margin-top: -9px;
+  background-image: url(/images/icons/pv_layer_controls.png);
+  background-size: 13px 60px;
+  opacity: 0.4;
+  cursor: pointer;
+}
+
+.nav_arrows {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.nav_arr:hover {
+  opacity: 0.8;
+}
+
 .randIcon {
   position: absolute;
   opacity: 0.5;
@@ -149,7 +174,7 @@
   left: 0;
 }
 
-.randIcon :hover {
+.randIcon:hover {
   opacity: 0.75;
 }
 
