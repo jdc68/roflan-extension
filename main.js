@@ -117,10 +117,8 @@ function addToggleOnHover(obj1, obj2) {
         const active = document.activeElement;
         const searchInput = document.querySelector('#roflan_search')
         if (active != searchInput || obj1 != obj2) {
-            // obj2.style.visibility = 'hidden';
-            // obj2.style.opacity = '0';
-            obj2.style.visibility = 'visible';
-            obj2.style.opacity = '1';
+            obj2.style.visibility = 'hidden';
+            obj2.style.opacity = '0';
         }
     })
 }
