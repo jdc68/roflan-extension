@@ -57,15 +57,31 @@
 #roflan_search {
   margin: 0 !important;
   margin-left: 266px !important;
-  /* background-color: #333336 !important; */
   position: absolute;
-  z-index: 1000;
+  z-index: 4;
   top: 0;
   border: 2px solid #edeef024;
+  padding: 0 34px 0 34px;
 }
 
 #roflan_search :focus {
   background-color: #444446 !important;
+}
+
+.clear_input {
+  padding: 0 !important;
+  width: 12px !important;
+  height: 12px !important;
+  margin: 0 !important;
+  border: none !important;
+  position: absolute !important;
+  right: 58px !important;
+  top: 9px !important;
+}
+
+.clear_input:hover {
+  opacity: 1 !important;
+  background: url(/images/cross.png) no-repeat center !important;
 }
 
 #menu_wrapper .scroll_overflow ul {

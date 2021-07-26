@@ -2,10 +2,10 @@ let data = [];
 
 // Get image names from compressed_images directory
 chrome.runtime.getPackageDirectoryEntry((directoryEntry) => {
-    directoryEntry.getDirectory('compressed_images', {}, function (subDirectoryEntry) {
+    directoryEntry.getDirectory('compressed_images', {}, function(subDirectoryEntry) {
         var directoryReader = subDirectoryEntry.createReader();
         (function readNext() {
-            directoryReader.readEntries(function (entries) {
+            directoryReader.readEntries(function(entries) {
                 if (entries.length) {
                     for (var i = 0; i < entries.length; ++i) {
                         // Map images to data[]
@@ -60,7 +60,6 @@ chrome.tabs.query({ currentWindow: true, active: true }, tabs => {
         setTimeout(() => {
             chrome.tabs.get(tabId, tab => {
                 if (changeInfo.url !== undefined && changeInfo.url.includes('https://vk.com/im') && changeInfo.url.includes('sel=')) {
-                    console.log("in bg")
                     let peer_id = getPeerId(changeInfo.url);
                     chrome.tabs.sendMessage(tab.id, { peer_id: peer_id, peer_type: peer_type, 'data': data });
                 }
@@ -71,11 +70,9 @@ chrome.tabs.query({ currentWindow: true, active: true }, tabs => {
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    console.log(request)
     if (request.reloaded) {
         chrome.tabs.getSelected(null, tab => {
             setTimeout(() => {
-                console.log("in bg")
                 let peer_id = getPeerId(sender.tab.url);
                 chrome.tabs.sendMessage(tab.id, { peer_id: peer_id, peer_type: peer_type, 'data': data });
             }, 100);
@@ -89,8 +86,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         });
     }
     return true;
-}
-)
+})
 
 function getParameterValue(url, parameterName) {
     var urlParameters = url.substr(url.indexOf("#") + 1),

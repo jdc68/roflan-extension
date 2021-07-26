@@ -181,6 +181,138 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
         search_input.setAttribute('autocomplete', 'off');
         scroll_content.appendChild(search_input);
 
+        let clear_input = document.createElement('button');
+        clear_input.type = 'button';
+        clear_input.className = 'im-member-item im-member-item--kick-link ui_search_reset nim-dialog nim-dialog--close clear_input';
+        clear_input.style.display = 'none';
+        scroll_content.appendChild(clear_input);
+        clear_input.onclick = () => {
+            search_input.value = "";
+            inputTriggered();
+        }
+
+        function searchImage(value, data) {
+            value = value.toLowerCase();
+            let fixed_value = layoutFix(value, true);
+            let filtered_data = [];
+            for (item in data) {
+                let key = data[item].key.toLowerCase();
+                if (key.includes(fixed_value)) {
+                    filtered_data.push(data[item]);
+                }
+            }
+            return filtered_data;
+        }
+
+        search_input.oninput = () => {
+            inputTriggered();
+        }
+
+        function inputTriggered() {
+            let images = []
+            let favs = []
+            images = document.querySelectorAll(".imageContainer");
+
+            for (img in images) {
+                if (images[img].parentNode != undefined) {
+                    images[img].parentNode.remove()
+                }
+            }
+
+            let toDisplay = searchImage(search_input.value, data)
+            if (images.length === 0) {
+                favourites_wrapp.style.display = 'none';
+            }
+            for (let obj in toDisplay) {
+                let index;
+                for (let i in data) {
+                    if (toDisplay[obj].key === data[i].key) {
+                        index = i;
+                    }
+                }
+
+                if (data[index].favourite) {
+                    favs.push(data[index]);
+                    createFavourite(index);
+                } else {
+                    createDefault(index);
+                }
+            }
+
+            if (favs.length > 0) {
+                images_wrapp.style.marginTop = '7px'
+                favourites_wrapp.style.display = 'block';
+            } else {
+                images_wrapp.style.marginTop = '44px'
+                favourites_wrapp.style.display = 'none';
+            }
+
+            if (search_input.value.length > 0) {
+                clear_input.style.display = 'block';
+            } else {
+                clear_input.style.display = 'none';
+            }
+        }
+
+        function layoutFix(str, reverse) {
+            replacer = {
+                "q": "й",
+                "w": "ц",
+                "e": "у",
+                "r": "к",
+                "t": "е",
+                "y": "н",
+                "u": "г",
+                "i": "ш",
+                "o": "щ",
+                "p": "з",
+                "[": "х",
+                "]": "ъ",
+                "a": "ф",
+                "s": "ы",
+                "d": "в",
+                "f": "а",
+                "g": "п",
+                "h": "р",
+                "j": "о",
+                "k": "л",
+                "l": "д",
+                ";": "ж",
+                "'": "э",
+                "z": "я",
+                "x": "ч",
+                "c": "с",
+                "v": "м",
+                "b": "и",
+                "n": "т",
+                "m": "ь",
+                ",": "б",
+                ".": "ю",
+                "/": ".",
+            };
+
+            reverse && Object.keys(replacer).forEach(key => {
+                let v = replacer[key]
+                delete(replacer[key])
+                replacer[v] = key
+            })
+
+            for (i = 0; i < str.length; i++) {
+                if (replacer[str[i].toLowerCase()] != undefined) {
+
+                    if (str[i] == str[i].toLowerCase()) {
+                        replace = replacer[str[i].toLowerCase()];
+                    } else if (str[i] == str[i].toUpperCase()) {
+                        replace = replacer[str[i].toLowerCase()].toUpperCase();
+                    }
+
+                    str = str.replace(str[i], replace);
+                }
+            }
+
+            return str;
+        }
+
         let fav_images_wrapp = document.createElement('ul');
         fav_images_wrapp.id = 'fav_images';
         favourites_wrapp.appendChild(fav_images_wrapp);
@@ -506,118 +638,6 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                     })
                 })
             })
-        }
-
-        function layoutFix(str, reverse) {
-            replacer = {
-                "q": "й",
-                "w": "ц",
-                "e": "у",
-                "r": "к",
-                "t": "е",
-                "y": "н",
-                "u": "г",
-                "i": "ш",
-                "o": "щ",
-                "p": "з",
-                "[": "х",
-                "]": "ъ",
-                "a": "ф",
-                "s": "ы",
-                "d": "в",
-                "f": "а",
-                "g": "п",
-                "h": "р",
-                "j": "о",
-                "k": "л",
-                "l": "д",
-                ";": "ж",
-                "'": "э",
-                "z": "я",
-                "x": "ч",
-                "c": "с",
-                "v": "м",
-                "b": "и",
-                "n": "т",
-                "m": "ь",
-                ",": "б",
-                ".": "ю",
-                "/": ".",
-            };
-
-            reverse && Object.keys(replacer).forEach(key => {
-                let v = replacer[key]
-                delete(replacer[key])
-                replacer[v] = key
-            })
-
-            for (i = 0; i < str.length; i++) {
-                if (replacer[str[i].toLowerCase()] != undefined) {
-
-                    if (str[i] == str[i].toLowerCase()) {
-                        replace = replacer[str[i].toLowerCase()];
-                    } else if (str[i] == str[i].toUpperCase()) {
-                        replace = replacer[str[i].toLowerCase()].toUpperCase();
-                    }
-
-                    str = str.replace(str[i], replace);
-                }
-            }
-
-            return str;
-        }
-
-        function searchImage(value, data) {
-            value = value.toLowerCase();
-            let fixed_value = layoutFix(value, true);
-            let filtered_data = [];
-            for (item in data) {
-                let key = data[item].key.toLowerCase();
-                if (key.includes(fixed_value)) {
-                    filtered_data.push(data[item]);
-                }
-            }
-            return filtered_data;
-        }
-
-        search_input.oninput = () => {
-            let images = []
-            let favs = []
-            images = document.querySelectorAll(".imageContainer");
-
-            for (img in images) {
-                if (images[img].parentNode != undefined) {
-                    images[img].parentNode.remove()
-                }
-            }
-
-            let toDisplay = searchImage(search_input.value, data)
-            if (images.length === 0) {
-                favourites_wrapp.style.display = 'none';
-            }
-            for (let obj in toDisplay) {
-                let index;
-                for (let i in data) {
-                    if (toDisplay[obj].key === data[i].key) {
-                        index = i;
-                    }
-                }
-
-                if (data[index].favourite) {
-                    favs.push(data[index]);
-                    createFavourite(index);
-                } else {
-                    createDefault(index);
-                }
-            }
-
-            if (favs.length > 0) {
-                images_wrapp.style.marginTop = '7px'
-                favourites_wrapp.style.display = 'block';
-            } else {
-                images_wrapp.style.marginTop = '44px'
-                favourites_wrapp.style.display = 'none';
-            }
         }
 
         let box_footer = document.createElement('div');
