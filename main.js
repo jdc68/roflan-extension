@@ -208,6 +208,12 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                     'class': 'image fav_image'
                 });
                 imagesContainer.appendChild(img);
+                img.onclick = () => {
+                    let offset = parseInt(imagesContainer.style.right.replace('px', ''));
+                    let step = parseInt(imagesContainer.style.width.replace('px', ''));
+                    let currentImgIndex = offset / step;
+                    imageClickHandler(key, currentImgIndex);
+                };
             })
 
             var info = document.createElement('div');
