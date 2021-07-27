@@ -155,19 +155,26 @@
   opacity: 0;
 }
 
-.nav_arr {
-  width: 12px;
-  height: 18px;
+.nav_arr_wrapper {
   position: absolute;
   top: 50%;
   margin-top: -9px;
+  cursor: pointer;
+  display: block;
+  width: 23px;
+  height: 23px;
+}
+
+.nav_arr {
+  position: absolute;
+  width: 12px;
+  height: 18px;
   background-image: url(/images/icons/pv_layer_controls.png);
   background-size: 13px 60px;
   opacity: 0.6;
-  cursor: pointer;
 }
 
-.nav_arr:hover {
+.nav_arr_wrapper:hover .nav_arr {
   opacity: 0.9;
 }
 

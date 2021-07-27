@@ -368,19 +368,29 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                 // Arrows
                 let arrows = document.createElement('div');
                 addToggleOnHover(container, arrows);
-                let arrow_left = document.createElement('div');
-                let arrow_right = document.createElement('div');
 
+                let arrow_left_wrapper = document.createElement('div');
+                let arrow_left = document.createElement('div');
+                arrow_left_wrapper.appendChild(arrow_left);
+
+                let arrow_right_wrapper = document.createElement('div');
+                let arrow_right = document.createElement('div');
+                arrow_right_wrapper.appendChild(arrow_right);
+
+                arrow_left_wrapper.className = 'nav_arr_wrapper';
+                arrow_left_wrapper.onclick = () => { cycleImages(false) }
                 arrow_left.className = 'nav_arr';
+                arrow_left_wrapper.style.left = '0';
                 arrow_left.style.left = '5px';
                 arrow_left.style.backgroundPositionY = '-16px';
-                arrow_left.style.display = 'none';
-                arrow_left.onclick = () => { cycleImages(false) }
+                arrow_left_wrapper.style.display = 'none';
 
+                arrow_right_wrapper.className = 'nav_arr_wrapper';
+                arrow_right_wrapper.onclick = () => { cycleImages(true) }
                 arrow_right.className = 'nav_arr';
+                arrow_right_wrapper.style.right = '0'
                 arrow_right.style.right = '5px'
-                arrow_right.style.backgroundPositionY = '-99px';
-                arrow_right.onclick = () => { cycleImages(true) }
+                arrow_right.style.backgroundPositionY = '-100px';
 
                 function cycleImages(toRight) {
                     let offset = parseInt(imagesContainer.style.right.replace('px', ''));
@@ -396,19 +406,19 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                     let newOffset = parseInt(imagesContainer.style.right.replace('px', ''));
                     // Hide arrows conditionally
                     if (newOffset > 0)
-                        arrow_left.style.display = 'block';
+                        arrow_left_wrapper.style.display = 'block';
                     if (newOffset <= 0)
-                        arrow_left.style.display = 'none';
+                        arrow_left_wrapper.style.display = 'none';
                     if (newOffset < maxOffset)
-                        arrow_right.style.display = 'block';
+                        arrow_right_wrapper.style.display = 'block';
                     if (newOffset >= maxOffset - step)
-                        arrow_right.style.display = 'none';
+                        arrow_right_wrapper.style.display = 'none';
                 }
 
                 arrows.className = 'nav_arrows'
 
-                arrows.appendChild(arrow_left);
-                arrows.appendChild(arrow_right);
+                arrows.appendChild(arrow_left_wrapper);
+                arrows.appendChild(arrow_right_wrapper);
                 container.appendChild(arrows);
             };
             info.innerHTML = text;
@@ -532,19 +542,29 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                 // Arrows
                 let arrows = document.createElement('div');
                 addToggleOnHover(container, arrows);
-                let arrow_left = document.createElement('div');
-                let arrow_right = document.createElement('div');
 
+                let arrow_left_wrapper = document.createElement('div');
+                let arrow_left = document.createElement('div');
+                arrow_left_wrapper.appendChild(arrow_left);
+
+                let arrow_right_wrapper = document.createElement('div');
+                let arrow_right = document.createElement('div');
+                arrow_right_wrapper.appendChild(arrow_right);
+
+                arrow_left_wrapper.className = 'nav_arr_wrapper';
+                arrow_left_wrapper.onclick = () => { cycleImages(false) }
                 arrow_left.className = 'nav_arr';
+                arrow_left_wrapper.style.left = '0';
                 arrow_left.style.left = '5px';
                 arrow_left.style.backgroundPositionY = '-16px';
-                arrow_left.style.display = 'none';
-                arrow_left.onclick = () => { cycleImages(false) }
+                arrow_left_wrapper.style.display = 'none';
 
+                arrow_right_wrapper.className = 'nav_arr_wrapper';
+                arrow_right_wrapper.onclick = () => { cycleImages(true) }
                 arrow_right.className = 'nav_arr';
+                arrow_right_wrapper.style.right = '0'
                 arrow_right.style.right = '5px'
-                arrow_right.style.backgroundPositionY = '-99px';
-                arrow_right.onclick = () => { cycleImages(true) }
+                arrow_right.style.backgroundPositionY = '-100px';
 
                 function cycleImages(toRight) {
                     let offset = parseInt(imagesContainer.style.right.replace('px', ''));
@@ -560,21 +580,22 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                     let newOffset = parseInt(imagesContainer.style.right.replace('px', ''));
                     // Hide arrows conditionally
                     if (newOffset > 0)
-                        arrow_left.style.display = 'block';
+                        arrow_left_wrapper.style.display = 'block';
                     if (newOffset <= 0)
-                        arrow_left.style.display = 'none';
+                        arrow_left_wrapper.style.display = 'none';
                     if (newOffset < maxOffset)
-                        arrow_right.style.display = 'block';
+                        arrow_right_wrapper.style.display = 'block';
                     if (newOffset >= maxOffset - step)
-                        arrow_right.style.display = 'none';
+                        arrow_right_wrapper.style.display = 'none';
                 }
 
                 arrows.className = 'nav_arrows'
 
-                arrows.appendChild(arrow_left);
-                arrows.appendChild(arrow_right);
+                arrows.appendChild(arrow_left_wrapper);
+                arrows.appendChild(arrow_right_wrapper);
                 container.appendChild(arrows);
             };
+
             info.innerHTML = text;
             container.appendChild(info);
 
