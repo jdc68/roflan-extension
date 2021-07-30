@@ -1,11 +1,11 @@
 let data = [];
 
-// Get image names from compressed_images directory
-chrome.runtime.getPackageDirectoryEntry((directoryEntry) => {
-    directoryEntry.getDirectory('compressed_images', {}, function(subDirectoryEntry) {
-        var directoryReader = subDirectoryEntry.createReader();
+async function populateData(subDirectoryEntry) {
+    var directoryReader = subDirectoryEntry.createReader();
+    return new Promise((resolve, reject) => {
         (function readNext() {
-            directoryReader.readEntries(function(entries) {
+            directoryReader.readEntries((entries) => {
+                console.log(entries);
                 if (entries.length) {
                     for (var i = 0; i < entries.length; ++i) {
                         // Map images to data[]
@@ -19,28 +19,52 @@ chrome.runtime.getPackageDirectoryEntry((directoryEntry) => {
                                     data[obj].url.push(entries[i].fullPath.replace("/crxfs", "chrome-extension://afedfiodoacaefjikhhbbelphdpmglok"));
                             }
                         }
+
                     }
                     readNext();
                 }
+                resolve(entries);
             });
         })();
+    })
+}
+
+// Get image names from compressed_images directory
+chrome.runtime.getPackageDirectoryEntry((directoryEntry) => {
+    directoryEntry.getDirectory('compressed_images', {}, async(subDirectoryEntry) => {
+        await populateData(subDirectoryEntry)
+        chrome.storage.local.get({ images_data: [] }, res => {
+            console.log(data)
+            if (data.length > res.images_data.length) {
+                for (i in data) {
+                    if (data[i].key !== res.images_data[i].key) {
+                        console.log(data[i].key + ' was added')
+                        res.images_data.splice(i, 0, data[i]);
+                        res.images_data[i].count = 0;
+                    }
+                }
+            } else if (data.length < res.images_data.length) {
+                for (i in res.images_data) {
+                    if (res.images_data[i].key !==
+                        data[i].key) {
+                        console.log(res.images_data[i].key + ' was removed')
+                        res.images_data.splice(i, 1);
+                    }
+                }
+            } else {
+                for (i in data) {
+                    res.images_data[i].url = data[i].url;
+                }
+            }
+
+            chrome.storage.local.set({ images_data: res.images_data }, () => {
+                console.log(res.images_data);
+            })
+        })
     });
 });
 
-
 let peer_type = 'default';
-
-chrome.storage.local.get({ images_data: [] }, res => {
-    if (res.images_data.length < data.length) {
-        for (el in data) {
-            if (res.images_data[el] === undefined) {
-                res.images_data.push(data[el]);
-            }
-        }
-    } else return;
-
-    chrome.storage.local.set({ images_data: res.images_data })
-})
 
 function getPeerId(url) {
     url = url.split('sel=');

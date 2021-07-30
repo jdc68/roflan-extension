@@ -124,6 +124,7 @@
   transition: 0.2s ease-out;
   cursor: pointer;
   color: #fff;
+  white-space: nowrap;
 }
 
 .imageContainer:hover .imageInfo {
@@ -196,6 +197,11 @@
 
 .randIcon:hover {
   opacity: 0.75;
+}
+
+.default_images_wrapper p {
+  margin-left: 43px;
+  opacity: 0.5;
 }
 
 .fav_wrapp p {
@@ -306,7 +312,7 @@
   height: 45px !important;
   width: 100%;
   border-radius: 0 0 4px 4px;
-  cursor: default !important;
+  cursor: F !important;
   pointer-events: none;
 }
 

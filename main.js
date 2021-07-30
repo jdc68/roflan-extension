@@ -108,6 +108,8 @@ function sendSticker(doc_id, type) {
     })
 }
 
+let menuToggled = false;
+
 function addToggleOnHover(obj1, obj2) {
     obj1.addEventListener('mouseover', () => {
         obj2.style.visibility = 'visible';
@@ -117,6 +119,20 @@ function addToggleOnHover(obj1, obj2) {
         const active = document.activeElement;
         const searchInput = document.querySelector('#roflan_search')
         if (active != searchInput || obj1 != obj2) {
+            obj2.style.visibility = 'hidden';
+            obj2.style.opacity = '0';
+        }
+    })
+}
+
+function addToggleOnClick(obj1, obj2) {
+    obj1.addEventListener('click', () => {
+        if (!menuToggled) {
+            menuToggled = true;
+            obj2.style.visibility = 'visible';
+            obj2.style.opacity = '1';
+        } else {
+            menuToggled = false;
             obj2.style.visibility = 'hidden';
             obj2.style.opacity = '0';
         }
@@ -141,7 +157,19 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
 
         if (wrapper === null) {
             wrapper = document.createElement('div');
-            addToggleOnHover(wrapper, box);
+            wrapper.addEventListener('mouseover', () => {
+                box.style.visibility = 'visible';
+                box.style.opacity = '1';
+            })
+            wrapper.addEventListener('mouseleave', () => {
+                const active = document.activeElement;
+                const searchInput = document.querySelector('#roflan_search')
+                if ((active != searchInput) && !menuToggled) {
+                    box.style.visibility = 'hidden';
+                    box.style.opacity = '0';
+                }
+            })
+            addToggleOnClick(wrapper, box);
             wrapper.className = 'roflanFace_wrapper _im_dialog_action_wrapper';
             wrapper.id = 'roflanFace_wrapper';
             icon = document.createElement('img');
@@ -151,9 +179,35 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
             element.prepend(wrapper);
             box.id = 'menu_wrapper';
             box.className = 'tt_default_right menu_wrapper images';
-            addToggleOnHover(box, box);
+            box.addEventListener('mouseover', () => {
+                box.style.visibility = 'visible';
+                box.style.opacity = '1';
+            })
+            box.addEventListener('mouseleave', () => {
+                if (!menuToggled) {
+                    const active = document.activeElement;
+                    const searchInput = document.querySelector('#roflan_search')
+                    if (active != searchInput) {
+                        box.style.visibility = 'hidden';
+                        box.style.opacity = '0';
+                    }
+                }
+            })
             element.appendChild(box);
         }
+
+        document.body.addEventListener('click', (element) => {
+            if (!box.contains(element.target) &&
+                !wrapper.contains(element.target) &&
+                element.target.className != "fav_wrapper" &&
+                element.target.className != "fav_icon" &&
+                element.target.className != "fav_icon fav_icon_added") {
+                console.log(element.target.className)
+                menuToggled = false;
+                box.style.visibility = 'hidden';
+                box.style.opacity = '0';
+            }
+        })
 
         chrome.storage.sync.get(['enableBackground', 'enableRandomization'], obj => {
             if (obj.enableBackground) {
@@ -166,7 +220,6 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
         let scroll_content = document.createElement('div');
         scroll_content.className = 'scroll_content';
         scroll_overflow.appendChild(scroll_content);
-
 
         let favourites_wrapp = document.createElement('div');
         favourites_wrapp.className = 'fav_wrapp';
@@ -240,10 +293,8 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
             }
 
             if (favs.length > 0) {
-                images_wrapp.style.marginTop = '7px'
                 favourites_wrapp.style.display = 'block';
             } else {
-                images_wrapp.style.marginTop = '44px'
                 favourites_wrapp.style.display = 'none';
             }
 
@@ -452,7 +503,6 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
 
         chrome.storage.local.get('favourites', result => {
             if (result.favourites.length > 0 && result.favourites !== undefined) {
-                images_wrapp.style.marginTop = '7px';
                 for (obj in result.favourites) {
                     createFavourite(result.favourites[obj].imageKey);
                 }
@@ -481,14 +531,21 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                     };
                 })
             } else {
-                images_wrapp.style.marginTop = '44px';
                 favourites_wrapp.style.display = 'none';
             }
         })
 
+        let default_images_wrapper = document.createElement('div');
+        default_images_wrapper.className = "default_images_wrapper";
+
+        let default_title = document.createElement('p');
+        default_title.innerHTML = 'Основные';
+        default_images_wrapper.appendChild(default_title);
+
         var images_wrapp = document.createElement('ul');
         images_wrapp.id = 'images';
-        scroll_content.appendChild(images_wrapp);
+        default_images_wrapper.appendChild(images_wrapp)
+        scroll_content.appendChild(default_images_wrapper);
         box.appendChild(scroll_overflow);
 
         function createDefault(key) {
@@ -612,7 +669,6 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                         var favourites = result.favourites;
                         favourites.push({ imageKey: key });
                         chrome.storage.local.set({ favourites: favourites });
-                        images_wrapp.style.marginTop = '7px';
                     })
                     fav_icon.src = chrome.extension.getURL('img/icons/fav2.png');
                     fav_icon.className = 'fav_icon fav_icon_added'
@@ -654,7 +710,6 @@ chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
                     chrome.storage.local.get('favourites', result => {
                         if (result.favourites.length === 0) {
                             favourites_wrapp.style.display = 'none';
-                            images_wrapp.style.marginTop = '44px';
                         }
                     })
                 })

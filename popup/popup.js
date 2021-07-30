@@ -1,6 +1,7 @@
 $(function() {
     chrome.storage.local.get({ 'images_data': [] }, response => {
         let data = response.images_data;
+        console.log(response.images_data);
         let sum = 0;
 
         for (el in data) {
@@ -12,7 +13,7 @@ $(function() {
         for (el in data) {
             sum += data[el].count;
         }
-        
+
         let sumEl = document.getElementById('total');
         sumEl.innerHTML = 'Total roflans sent: ' + sum
 
